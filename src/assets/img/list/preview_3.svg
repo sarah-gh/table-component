@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="21" height="15" viewBox="0 0 21 15">
+    <defs>
+        <style>
+            .prefix__cls-1{fill:none;stroke:#6090f7;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}
+        </style>
+    </defs>
+    <g id="prefix__preview" transform="translate(-2 -5)">
+        <g id="prefix__Group_40" data-name="Group 40" transform="translate(.5 .5)">
+            <path id="prefix__Path_426" d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" class="prefix__cls-1" data-name="Path 426"/>
+            <circle id="prefix__Ellipse_52" cx="3" cy="3" r="3" class="prefix__cls-1" data-name="Ellipse 52" transform="translate(9 9)"/>
+        </g>
+    </g>
+</svg>

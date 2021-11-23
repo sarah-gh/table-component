@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <defs>
+        <style>
+            .prefix__cls-2{fill:none;stroke:#878eb8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}
+        </style>
+    </defs>
+    <g id="prefix__logout" transform="translate(3 4)">
+        <path id="prefix__Rectangle_647" d="M0 0H32V32H0z" data-name="Rectangle 647" transform="translate(-3 -4)" style="fill:none"/>
+        <path id="prefix__Line_53" d="M0 0L12 0" class="prefix__cls-2" data-name="Line 53" transform="translate(9 12)"/>
+        <path id="prefix__Path_394" d="M17 16l4-4-4-4" class="prefix__cls-2" data-name="Path 394"/>
+        <path id="prefix__Path_395" d="M19 4V1H5v22h14v-3" class="prefix__cls-2" data-name="Path 395"/>
+    </g>
+</svg>
