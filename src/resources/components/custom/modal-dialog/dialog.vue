@@ -1,7 +1,7 @@
 <template>
     <div class="">
-        <button class="close" @click="showModalfalse()">
-            <!-- <img src="@/assets/img/svg-modal/linear/add.svg" /> -->
+        <button class="close" @click="showModalfalse()"> 
+			&#10006;
         </button>
         <header>
             <slot name="header"></slot>

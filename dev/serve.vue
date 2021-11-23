@@ -4,7 +4,7 @@
     <saragh-table-component-sample
     :tablehead="thead"
     :items="items"
-    
+    :modal="false"
     @showItem="showItem"
     @deleteItem="deleteItem"
     :operations="operations"
@@ -23,6 +23,16 @@
           <i>
               {{props.item.text}}
           </i>
+      </template>
+      <template slot="modal-main" slot-scope="props">
+        <div class="text">
+          <div class="content">
+            <p v-for="(item, x) in props.modalData" :key="x">
+              <span>lable :</span>
+              {{item}}
+            </p>
+          </div>
+        </div>
       </template>
       <template slot="column_1" slot-scope="props">
           <i>

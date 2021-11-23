@@ -18,7 +18,7 @@
 		@addElement="addElement">
 	</search>
 
-  	<table v-if="!empty">
+  	<table v-if="!empty && orderedList.length > 0">
         <thead>
 			<tr>
 				<th class="user-select" v-for="(item, x) in tHead" :key="x" @click="sortList(x)">
@@ -52,12 +52,7 @@
 				</th>
 			</tr>
         </thead>
-		<div class="not-found" v-if="orderedList.length < 1 && !empty">
-			<slot name="table-not-found">
-				not found
-			</slot>
-		</div>
-        <tbody v-if="orderedList.length > 0">
+        <tbody>
 			<tr class="row"  v-for="(item, index) in orderedList" :key="index">
 				<!-- rows -->
 				<td :data-th="item.name" v-for="(i, x) in tHead" :key="x">
@@ -70,16 +65,14 @@
 					<template v-for="(operate, x) in tOperations">
 						<div v-if="operate.active" :key="x" :class="operate.class" class="item" @click="operation(operate,item)">
 							<div>
-								<div>
-									<slot :name="'operate_icon_' + operate.class" :img="operate.img">
-										
-									</slot>
-								</div>
-								<div>
-									<slot :name="'operate_text_' + operate.class" :img="operate.img">
-										{{ operate.text }}
-									</slot>
-								</div>
+								<slot :name="'operate_icon_' + operate.class" :img="operate.img">
+									
+								</slot>
+							</div>
+							<div>
+								<slot :name="'operate_text_' + operate.class" :img="operate.img">
+									{{ operate.text }}
+								</slot>
 							</div>
 						</div>
 					</template>
@@ -87,6 +80,11 @@
 			</tr>
         </tbody>
     </table>
+	<div class="not-found" v-if="orderedList.length < 1 && !empty">
+		<slot name="table-not-found">
+			not found
+		</slot>
+	</div>
 	<div class="empty" v-if="orderedList.length < 1 && empty">
 		<slot name="table-empty">
 			empty
@@ -103,7 +101,28 @@
 	<slot name="table-footer">
 
 	</slot>
-	
+	<div id="wrapper" class="main">
+		<div class="overlay" v-if="showModal" @click="showModal = false"></div>
+		<div class="modal" v-if="showModal">
+			<mydialog @Modalfalse="showModal = false">
+				<header>
+					<slot name="modal-header">
+						<h3>اطلاعات</h3>
+					</slot>
+				</header>
+				<main>
+					<slot name="modal-main" :modalData="modalData">
+						modal-main
+					</slot>
+				</main>
+				<footer>
+					<slot name="modal-footer">
+						<button class="confirmation" @click="showModal = false">تایید</button>
+					</slot>
+				</footer>
+			</mydialog>
+		</div>
+	</div>
 </div> 
 </template>
 
@@ -111,12 +130,14 @@
 import MyPaginate from '@/resources/components/custom/my-paginate/my-paginate.vue'
 import search from '@/resources/components/custom/search/search.vue'
 import selectPageSize from '@/resources/components/custom/select/select-page-size.vue'
+import mydialog from '@/resources/components/custom/modal-dialog/dialog.vue'
 
 export default {
 	name: 'sara-table',
 	components: {
 		MyPaginate,
 		search,
+		mydialog,
 		selectPageSize
 	},
 	props: {
@@ -143,6 +164,10 @@ export default {
 		operations: {
 			type: Array,
 			default: [true, true]
+		},
+		modal: {
+			type: Boolean,
+			default: true
 		}
 	},
 	data () {
@@ -152,12 +177,14 @@ export default {
 			disable: true,
 			wordSearch: '',
 			tHead: [],
+			modalData: [],
 			tItems: [],
 			empty: false,
 			currentPage: 1,
 			tOperations: [],
 			activeOperations: true,
 			showUpto: 4,
+			showModal: false,
 			tPageSize: 3,
 			showFromto: 0
 		}
@@ -240,7 +267,12 @@ export default {
 			this.$emit('showItem', item)
 		},
 		operation (i,item) {
-			i.func(this,item)
+			if(this.modal) {
+				this.modalData = item
+				this.showModal = true
+			}
+			else i.func(this,item)
+			
 		},
 		onEnterSearch() {
 			this.tHead.forEach((element, index) => {
@@ -297,6 +329,15 @@ export default {
 </script>
 
 <style scoped>
+.overlay {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .5);
+}
 .table-pdf{
 	border-collapse: separate;
     border-spacing: 0 15px;
@@ -522,6 +563,163 @@ section table {
  .Pagesize {
 	 width: 56%;
 }
+.main .modal {
+	 position: absolute;
+	 width: 40%;
+	 z-index: 9999;
+	 margin: 0 auto;
+	 padding: 30px 30px 50px 30px;
+	 background-color: #fff;
+	 top: 30%;
+	 left: 30%;
+	 border-radius: 5px;
+	 box-shadow: 0 4px 10px 0 rgba(40, 57, 79, 0.1);
+	 border: solid 1px #bae3ef;
+	 display: flex;
+	 flex-direction: column;
+}
+ .main .modal footer {
+	 display: flex;
+	 justify-content: center;
+	 align-items: center;
+}
+ .main .modal h3 {
+	 font-size: 1.5rem;
+	 font-weight: bold;
+	 text-align: start;
+}
+ .main .modal .select {
+	 position: relative;
+}
+ .main .modal .select select {
+	 appearance: none;
+	 outline: 0;
+	 border: 0;
+	 box-shadow: none;
+	 background-image: none;
+	 cursor: pointer;
+}
+ .main .modal .select select::-ms-expand {
+	 display: none;
+}
+ .main .modal .select select {
+	 width: 100%;
+	 height: 50px;
+	 padding: 10px 16px 11px 13px;
+	 border-radius: 10px;
+	 border: solid 1px rgba(19, 158, 202, 0.3);
+	 background-color: #fff;
+	 margin-bottom: 30px;
+	 font-family: 'IRANYekan_n';
+}
+ .main .modal .select::after {
+	 position: absolute;
+	 top: 11px;
+	 left: 15px;
+	 background-color: transparent;
+	 transition: 0.25s all ease;
+	 pointer-events: none;
+}
+ .main .modal .confirmation {
+	 width: 165px;
+	 height: 50px;
+	 flex-grow: 0;
+	 text-align: center;
+	 border-radius: 10px;
+	 background-color: #30bfb7;
+	 border: 0px;
+	 opacity: 1;
+	 align-self: end;
+	 color: #fff;
+	 font-family: 'IRANYekan_b';
+	 font-size: 1.125rem;
+	 cursor: pointer;
+}
+ .main .close {
+	 background-color: transparent;
+	 border: 0px;
+	 font-size: 1.25rem;
+	 align-self: end;
+	 cursor: pointer;
+}
+ .main .modal {
+	 direction: rtl;
+	 position: absolute;
+	 width: 40%;
+	 text-align: start;
+	 z-index: 9999;
+	 margin: 0 auto;
+	 padding: 30px 30px 50px 30px;
+	 background-color: #fff;
+	 top: 15%;
+	 left: 30%;
+	 border-radius: 5px;
+	 box-shadow: 0 4px 10px 0 rgba(40, 57, 79, 0.1);
+	 border: solid 1px #bae3ef;
+	 background-color: #fafafa;
+	 display: flex;
+	 flex-direction: column;
+}
+ .main .modal h3 {
+	 font-size: 1.5rem;
+	 font-weight: bold;
+	 text-align: center;
+}
+ .main .modal .select {
+	 position: relative;
+}
+ .main .modal .select select {
+	 appearance: none;
+	 outline: 0;
+	 border: 0;
+	 box-shadow: none;
+	 background-image: none;
+	 cursor: pointer;
+}
+ .main .modal .select select::-ms-expand {
+	 display: none;
+}
+ .main .modal .select select {
+	 width: 100%;
+	 height: 50px;
+	 padding: 10px 16px 11px 13px;
+	 border-radius: 10px;
+	 border: solid 1px rgba(19, 158, 202, 0.3);
+	 background-color: #fff;
+	 margin-bottom: 30px;
+	 font-family: 'IRANYekan_n';
+}
+ .main .modal .select::after {
+	 position: absolute;
+	 top: 11px;
+	 left: 15px;
+	 background-color: transparent;
+	 transition: 0.25s all ease;
+	 pointer-events: none;
+}
+ .main .modal .confirmation {
+	 width: 165px;
+	 height: 50px;
+	 flex-grow: 0;
+	 text-align: center;
+	 border-radius: 10px;
+	 background-color: #30bfb7;
+	 border: 0px;
+	 opacity: 1;
+	 align-self: end;
+	 color: #fff;
+	 font-family: 'IRANYekan_b';
+	 font-size: 1.125rem;
+	 cursor: pointer;
+}
+ .main .close {
+	 background-color: transparent;
+	 border: 0px;
+	 font-size: 1.25rem;
+	 align-self: end;
+	 cursor: pointer;
+}
+ 
  @media only screen and (max-width: 500px) {
 	 table {
 		 border-collapse: separate;

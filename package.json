@@ -1,6 +1,6 @@
 {
   "name": "saragh-table-component",
-  "version": "0.0.8",
+  "version": "0.1.1",
   "description": "",
   "main": "dist/saragh-table-component.ssr.js",
   "browser": "dist/saragh-table-component.esm.js",
@@ -40,6 +40,10 @@
     "sass-loader": "^12.3.0",
     "vue": "^2.6.14",
     "vue-template-compiler": "^2.6.14"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sarah-gh/table-component"
   },
   "peerDependencies": {
     "vue": "^2.6.14"
