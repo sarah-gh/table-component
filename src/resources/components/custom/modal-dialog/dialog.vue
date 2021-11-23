@@ -17,7 +17,7 @@
 
 <script>
 export default {
-  name: 'modal-new-post',
+  name: 'modal',
   methods: {
     showModalfalse () {
       this.$emit('Modalfalse')

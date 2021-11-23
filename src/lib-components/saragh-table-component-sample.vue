@@ -36,8 +36,10 @@
 							</div>
 						</div>
 						<div>
-							<slot :name="'header_column_' + item.name" :item="item">
-								{{ item.text }}
+							<slot :name="'header_column'" :item="item">
+								<slot :name="'header_column_' + item.name" :item="item">
+									{{ item.text }}
+								</slot>
 							</slot>
 						</div>
 						
@@ -45,7 +47,7 @@
 				</th>
 				<th v-if="activeOperations">
 					<div class="thead">
-						<slot name="name-operations">
+						<slot name="header_column_operations">
 							عملیات
 						</slot>
 					</div>
@@ -98,13 +100,15 @@
           @page-changed="currentPageClick"
           text-before-input=" "
           text-after-input=" "/>
-	<slot name="table-footer">
+	<div class="table-footer">
+		<slot name="table-footer">
 
-	</slot>
+		</slot>
+	</div>
 	<div id="wrapper" class="main">
 		<div class="overlay" v-if="showModal" @click="showModal = false"></div>
 		<div class="modal" v-if="showModal">
-			<mydialog @Modalfalse="showModal = false">
+			<modal-dialog @Modalfalse="showModal = false">
 				<header>
 					<slot name="modal-header">
 						<h3>اطلاعات</h3>
@@ -120,7 +124,7 @@
 						<button class="confirmation" @click="showModal = false">تایید</button>
 					</slot>
 				</footer>
-			</mydialog>
+			</modal-dialog>
 		</div>
 	</div>
 </div> 
@@ -130,14 +134,14 @@
 import MyPaginate from '@/resources/components/custom/my-paginate/my-paginate.vue'
 import search from '@/resources/components/custom/search/search.vue'
 import selectPageSize from '@/resources/components/custom/select/select-page-size.vue'
-import mydialog from '@/resources/components/custom/modal-dialog/dialog.vue'
+import ModalDialog from '@/resources/components/custom/modal-dialog/dialog.vue'
 
 export default {
 	name: 'sara-table',
 	components: {
 		MyPaginate,
 		search,
-		mydialog,
+		ModalDialog,
 		selectPageSize
 	},
 	props: {
@@ -338,19 +342,16 @@ export default {
   height: 100%;
   background-color: rgba(0, 0, 0, .5);
 }
-.table-pdf{
-	border-collapse: separate;
-    border-spacing: 0 15px;
+.table-header{
+	width: 100%;
+	text-align: center;
+	font-size: 33px;
 }
-
-.thead-pdf td{
-	font-size: 17px;
-	color: gray;
-	margin: 20px auto;
-}
-.tbody-pdf td{
-	font-size: 14px;
-	margin: 10px auto;
+.table-footer{
+	width: 100%;
+	text-align: center;
+	font-size: 13px;
+	margin: 20px 0;
 }
 section table {
 	direction: rtl;

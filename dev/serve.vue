@@ -4,26 +4,35 @@
     <saragh-table-component-sample
     :tablehead="thead"
     :items="items"
-    :modal="false"
+    :modal="true"
     @showItem="showItem"
     @deleteItem="deleteItem"
     :operations="operations"
     :pageSize="pageSize"
       >
       <template slot="table-header">
-          card header
+        <h3> 
+          <b>
+            Table header
+          </b>
+        </h3>
       </template> 
       <template slot="table-footer">
-          card footer
+        <i>
+          Table footer
+        </i>
       </template> 
       <!-- <template slot="global-arrow-sort-icon-up">
          
       </template>  -->
-      <template slot="header_column_fname" slot-scope="props">
-          <i>
-              {{props.item.text}}
-          </i>
+      <template slot="header_column" slot-scope="props">
+          <!-- ** -->
+          {{props.item.text}}
       </template>
+      <!-- <template slot="header_column_fname" slot-scope="props">
+          !!
+          {{props.item.text}}
+      </template> -->
       <template slot="modal-main" slot-scope="props">
         <div class="text">
           <div class="content">
@@ -35,9 +44,9 @@
         </div>
       </template>
       <template slot="column_1" slot-scope="props">
-          <i>
+          **
             {{props.item[props.i.name]}}
-          </i>
+          **
       </template>
       <template slot="operate_icon_delete">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
@@ -303,6 +312,123 @@ export default Vue.extend({
               nationalCode: "بلابلا",
               phone: "09158889977",
               username: "بلابلافغا"
+          },
+          {
+              id: "dfdfv",
+              parent: "saraghotbzadeh",
+              administratorName: "سارا قطب زاده",
+              education: "dfvdfv",
+              jobSkills: "dfvdfv",
+              jobTitle: "dfvdfv",
+              fname: "dfgdfg",
+              lname: "dfgdfv",
+              nationalCode: "dfvdfv",
+              phone: "09158845522",
+              username: "dfdfv"
+          },
+          {
+              id: "gfhfghn",
+              parent: "saraghotbzadeh",
+              administratorName: "سارا قطب زاده",
+              education: "fghfgh",
+              jobSkills: "fghfgh",
+              jobTitle: "fghfgh",
+              fname: "rthglkmb",
+              lname: "fgfghg",
+              nationalCode: "fghfgh",
+              phone: "09158975489",
+              username: "gfhfghn"
+          },
+          {
+              id: "gytyu",
+              parent: "saraghotbzadeh",
+              administratorName: "سارا قطب زاده",
+              education: "بلابلا",
+              jobSkills: "بلابلا",
+              jobTitle: "بلابلا",
+              fname: "نتمت",
+              lname: "سیبیت",
+              nationalCode: "بلابلا",
+              phone: "09158889977",
+              username: "بلابلافغا"
+          },
+          {
+              id: "dfdfv",
+              parent: "saraghotbzadeh",
+              administratorName: "سارا قطب زاده",
+              education: "dfvdfv",
+              jobSkills: "dfvdfv",
+              jobTitle: "dfvdfv",
+              fname: "dfgdfg",
+              lname: "dfgdfv",
+              nationalCode: "dfvdfv",
+              phone: "09158845522",
+              username: "dfdfv"
+          },
+          {
+              id: "gfhfghn",
+              parent: "saraghotbzadeh",
+              administratorName: "سارا قطب زاده",
+              education: "fghfgh",
+              jobSkills: "fghfgh",
+              jobTitle: "fghfgh",
+              fname: "rthglkmb",
+              lname: "fgfghg",
+              nationalCode: "fghfgh",
+              phone: "09158975489",
+              username: "gfhfghn"
+          },
+          {
+              id: "gytyu",
+              parent: "saraghotbzadeh",
+              administratorName: "سارا قطب زاده",
+              education: "بلابلا",
+              jobSkills: "بلابلا",
+              jobTitle: "بلابلا",
+              fname: "نتمت",
+              lname: "سیبیت",
+              nationalCode: "بلابلا",
+              phone: "09158889977",
+              username: "بلابلافغا"
+          },
+          {
+              id: "dfdfv",
+              parent: "saraghotbzadeh",
+              administratorName: "سارا قطب زاده",
+              education: "dfvdfv",
+              jobSkills: "dfvdfv",
+              jobTitle: "dfvdfv",
+              fname: "dfgdfg",
+              lname: "dfgdfv",
+              nationalCode: "dfvdfv",
+              phone: "09158845522",
+              username: "dfdfv"
+          },
+          {
+              id: "gfhfghn",
+              parent: "saraghotbzadeh",
+              administratorName: "سارا قطب زاده",
+              education: "fghfgh",
+              jobSkills: "fghfgh",
+              jobTitle: "fghfgh",
+              fname: "rthglkmb",
+              lname: "fgfghg",
+              nationalCode: "fghfgh",
+              phone: "09158975489",
+              username: "gfhfghn"
+          },
+          {
+              id: "gytyu",
+              parent: "saraghotbzadeh",
+              administratorName: "سارا قطب زاده",
+              education: "بلابلا",
+              jobSkills: "بلابلا",
+              jobTitle: "بلابلا",
+              fname: "نتمت",
+              lname: "سیبیت",
+              nationalCode: "بلابلا",
+              phone: "09158889977",
+              username: "بلابلافغا"
           }
       ],
       pageSize: 3,
@@ -337,12 +463,6 @@ export default Vue.extend({
     },
     showItem() {
       console.log('showItem');
-    },
-    addElement (employee) {
-      this.items.push(employee)
-    },
-    onEnterModal (value) {
-      this.showModal = false
     }
   }
 });

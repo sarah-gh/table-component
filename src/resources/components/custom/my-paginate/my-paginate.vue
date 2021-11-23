@@ -36,9 +36,9 @@
         <li class="pr-6" v-if="hasLast()">
           <a href="#" @click.prevent="changePage(totalPages)">
             <div class="flex hover:bg-gray-200 rounded-md transform rotate-45 h-6 w-6 items-center justify-center">
-          <span class="transform -rotate-45">
-            {{ totalPages }}
-          </span>
+              <span class="transform -rotate-45">
+                {{ totalPages }}
+              </span>
             </div>
           </a>
         </li>

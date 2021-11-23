@@ -169,7 +169,7 @@ export default {
  .table-form .search-container {
 	 display: flex;
 	 width: 100%;
-	 justify-content: space-between;
+	 justify-content: center;
 	 align-items: center;
 }
  .table-form .search-container .select {
@@ -686,7 +686,7 @@ export default {
 	 .table-form .search-container {
 		 display: flex;
 		 width: 100%;
-		 justify-content: space-between;
+		 justify-content: center;
 		 align-items: center;
 		 flex-direction: row;
 	}
@@ -788,7 +788,7 @@ export default {
 	 .table-form .search-container {
 		 display: flex;
 		 width: 100%;
-		 justify-content: space-between;
+		 justify-content: center;
 		 align-items: center;
 	}
 	 .table-form .search-container .select {
