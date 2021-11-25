@@ -2,7 +2,11 @@
 
 # 1. saragh-table-component
 
-![table](https://user-images.githubusercontent.com/59251589/142979168-09b6f585-7f16-43c5-a3a7-4f68ac93e4fd.PNG)
+To create this component library, I used the vue-sfc-rollup npm package. 
+
+[vue-sfc-rollup](https://www.freecodecamp.org/news/how-to-create-and-publish-a-vue-component-library/)
+
+![table](https://user-images.githubusercontent.com/59251589/143389219-a6c8d38a-9970-4677-9b22-b770a6757bf8.PNG)
 
 
 # 2. Featuress
@@ -27,6 +31,7 @@ Table of Contents
 # 4. Basic Usage
 It is easy to include saragh-table-component as a component in your application.
 
+### To delete data, it must contain a unique id 
 
 ```vue
 <template>

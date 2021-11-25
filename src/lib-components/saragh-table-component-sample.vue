@@ -5,25 +5,30 @@
 
 		</slot>
     </div>
-	<select-page-size 
+	<select-page-size
+		v-if="!empty"
+		:placeholder="page_size_placeholder"
 		@changePageSize="changePageSize">
 	</select-page-size>
 	<search 
 		v-if="!empty"
 		:thead="tHead" 
-		:items="items" 
 		:search_placeholder="search_placeholder"
 		:select_placeholder="select_placeholder"
-		@onEnterSearch="onEnterSearch" 
-		@addElement="addElement">
+		@onEnterSearch="onEnterSearch"
+		>
 	</search>
-
-  	<table v-if="!empty && orderedList.length > 0">
+	<div class="dot" v-if="loadSearch">
+		<div class="stage">
+			<div class="dot-flashing"></div>
+		</div>
+	</div>
+  	<table v-if="orderedList.length > 0" :class="{ 'load-table': loadSearch }">
         <thead>
 			<tr>
 				<th class="user-select" v-for="(item, x) in tHead" :key="x" @click="sortList(x)">
 					<div class="thead">
-						<div class="icon" v-if="x < tHead.length">
+						<div class="icon" v-if="x < tHead.length && item.typeof !== 'component' && item.typeof !== 'function'">
 							<div class="arrow arr-up" :class="{ 'arrow-sort': item.isSort && !item.ascending }">
 								<slot name="global-arrow-sort-icon-up">
 									&#129169;
@@ -42,7 +47,6 @@
 								</slot>
 							</slot>
 						</div>
-						
 					</div>
 				</th>
 				<th v-if="activeOperations">
@@ -57,9 +61,14 @@
         <tbody>
 			<tr class="row"  v-for="(item, index) in orderedList" :key="index">
 				<!-- rows -->
-				<td :data-th="item.name" v-for="(i, x) in tHead" :key="x">
-					<slot :name="'column_' + x" :item="item" :i="i">
-						{{ item[i.name] }}
+				<td :data-th="item.name" v-for="(itemHead, indexHead) in tHead" :key="indexHead">
+					<slot :name="'column_' + indexHead" :item="item" :i="itemHead">
+						<slot v-if="itemHead.typeof === 'component'">
+							<component v-bind="item.propsCopmonent" :is="item[itemHead.name]"  />
+						</slot>
+						<span v-else>
+							{{ item[itemHead.name] }}
+						</span>
 					</slot>
 				</td>
 				<!-- operations -->
@@ -82,24 +91,25 @@
 			</tr>
         </tbody>
     </table>
-	<div class="not-found" v-if="orderedList.length < 1 && !empty">
+	<div class="not-found" :class="{ 'load-table': loadSearch }" v-if="orderedList.length < 1 && !empty">
 		<slot name="table-not-found">
-			not found
+				Not found
 		</slot>
 	</div>
 	<div class="empty" v-if="orderedList.length < 1 && empty">
 		<slot name="table-empty">
-			empty
+			Empty
 		</slot>
 	</div>
 	<myPaginate
-		  v-if="totalPage>0"
-          :current="currentPage"
-          :total="tItems.length"
-          :per-page="tPageSize"
-          @page-changed="currentPageClick"
-          text-before-input=" "
-          text-after-input=" "/>
+		:class="{ 'load-table': loadSearch }"
+		v-if="totalPage>0"
+        :current="currentPage"
+        :total="tItems.length"
+        :per-page="tPageSize"
+        @page-changed="currentPageClick"
+        text-before-input=" "
+        text-after-input=" "/>
 	<div class="table-footer">
 		<slot name="table-footer">
 
@@ -131,10 +141,10 @@
 </template>
 
 <script>
-import MyPaginate from '@/resources/components/custom/my-paginate/my-paginate.vue'
-import search from '@/resources/components/custom/search/search.vue'
-import selectPageSize from '@/resources/components/custom/select/select-page-size.vue'
-import ModalDialog from '@/resources/components/custom/modal-dialog/dialog.vue'
+import MyPaginate from '@/components/my-paginate/my-paginate.vue'
+import search from '@/components/search/search.vue'
+import selectPageSize from '@/components/select/select-page-size.vue'
+import ModalDialog from '@/components/modal-dialog/dialog.vue'
 
 export default {
 	name: 'sara-table',
@@ -147,7 +157,7 @@ export default {
 	props: {
 		items: {
 			type: Array,
-			default: []
+			default: () => ([])
 		},
 		search_placeholder: {
 			type: String,
@@ -157,9 +167,13 @@ export default {
 			type: String,
 			default: 'سرچ بر اساس'
 		},
+		page_size_placeholder: {
+			type: String,
+			default: 'تعداد نمایش در هر صفحه'
+		},
 		tablehead: {
 			type: Array,
-			default: []
+			default: () => ([])
 		},
 		pageSize: {
 			type: Number,
@@ -176,6 +190,7 @@ export default {
 	},
 	data () {
 		return {
+			loadSearch: false,
 			pageSort: '',
 			pageSearch: '',
 			disable: true,
@@ -190,11 +205,14 @@ export default {
 			showUpto: 4,
 			showModal: false,
 			tPageSize: 3,
-			showFromto: 0
+			showFromto: 0,
+			wordSearch: '',
+			headSearch: '',
+			timeout: null
 		}
 	},
-	created () {
-		this.refresh()
+	mounted () {
+		this.start()
 	},
 	computed: {
 		orderedList () {
@@ -207,10 +225,20 @@ export default {
 		}
 	},
 	methods: {
-		refresh() {
+		async setItems() {
+			this.tItems = [...this.items]
+			for(const items of this.tItems){
+				for (const key in this.tHead){
+					if(typeof items[this.tHead[key].name] === 'function' && this.tHead[key].typeof == 'function'){
+						items[this.tHead[key].name] = await items[this.tHead[key].name]()
+					}
+				}
+			}
+		},
+		async start() {
 			this.tPageSize = this.pageSize
 			this.showUpto = this.tPageSize
-			this.tHead = this.tablehead
+			this.tHead = [...this.tablehead]
 			this.tHead.forEach((e) => {
 				e.ascending = true
 				e.isSort = false
@@ -218,7 +246,7 @@ export default {
 			if(!this.operations[0] && !this.operations[1]) {
 				this.activeOperations = false
 			}
-			this.tItems = this.items
+			await this.setItems()
 			if(this.tItems.length < 1) {
 				this.empty = true
 			}
@@ -252,47 +280,30 @@ export default {
 			}
 		},
 		changePageSize(pageSize) {
-			console.log(pageSize);
 			this.tPageSize = pageSize
 			this.showUpto = this.tPageSize
 			this.currentPage = 1
 			this.showFromto = 0
 		},
-		// generateReport() {
-		// 	this.$refs.DownloadComp.generatePdf()
-		// },
 		deleteItem(item) {
-			this.tItems = this.tItems.filter(function(value, index, arr){ 
+			this.tItems = this.tItems.filter(function(value){ 
 				return value.id !== item.id;
 			});
 			this.$emit('deleteItem', item)
 		},
 		showItem(item) {
-			this.$emit('showItem', item)
-		},
-		operation (i,item) {
 			if(this.modal) {
 				this.modalData = item
 				this.showModal = true
 			}
-			else i.func(this,item)
-			
+			else this.$emit('showItem', item)
 		},
-		onEnterSearch() {
-			this.tHead.forEach((element, index) => {
-				element.ascending = true
-				element.isSort = false
-			})
-			this.tItems = []
-		},
-		onEnterDelete() {
-			this.tItems = this.items
-		},
-		addElement (item) {
-			this.tItems.push(item)
+		operation (i,item) {
+			i.func(this,item)
 		},
 		sortList (i) {
-			this.tHead.forEach((element, index) => {
+			if(this.tHead[i].typeof !== 'component' && this.tHead[i].typeof !== 'function') {
+				this.tHead.forEach((element, index) => {
 				if (index === i) {
 					element.ascending = !element.ascending
 					element.isSort = true				
@@ -300,22 +311,22 @@ export default {
 					element.ascending = true
 					element.isSort = false
 				}
-			})
-			this.sort([i, this.tHead[i]])
+				})
+				this.sort([i, this.tHead[i]])
+			}
+			
 		},
 		sort (i) {
 			if (i[1].typeof === 'fa') {
 				this.tItems.sort((a, b) => a[i[1].name].localeCompare(b[i[1].name], 'fa'))
 			} else if(i[1].typeof === "number") {
-				this.tItems.sort((a, b) => {
-				return a[i[1].name] - b[i[1].name];
-				});
+				this.tItems.sort((a, b) => ( a[i[1].name] - b[i[1].name]));
 			} else if (i[1].typeof === "date") {
 				this.tItems.sort((a, b) => {
 				const ca = +a[i[1].name].replace(/\//g, "");
 				const cb = +b[i[1].name].replace(/\//g, "");
 				return ca - cb;
-				})
+			})
 			} else {
 				this.tItems.sort((a, b) => (a[i[1].name] > b[i[1].name]) ? 1 : ((b[i[1].name] > a[i[1].name]) ? -1 : 0))
 			}
@@ -324,15 +335,154 @@ export default {
 			}
 		},
 		currentPageClick (i) {
-			this.currentPage = i
-			this.showFromto = ((this.currentPage - 1) * this.tPageSize)
-			this.showUpto = (this.currentPage * this.tPageSize)
-		}
+			if(this.currentPage !== i) {
+				this.currentPage = i
+				this.showFromto = ((this.currentPage - 1) * this.tPageSize)
+				this.showUpto = (this.currentPage * this.tPageSize)
+			}
+		},
+		// search 
+        isAll () {
+            if (this.headSearch === '' || this.headSearch === '-1') {
+                return true
+            }
+            return false
+        },
+		debounce (fn, delay) {
+			var timeoutID = null
+			return function () {
+				clearTimeout(timeoutID)
+				let args = arguments
+				let that = this
+				timeoutID = setTimeout(function () {
+					fn.apply(that, args)
+				}, delay)
+			}
+		},
+        async onEnterSearch(e) {
+			this.loadSearch = true
+			if (this.timeout) clearTimeout(this.timeout)
+			this.timeout = setTimeout(async () => {
+				this.headSearch = e[0]
+				this.wordSearch = e[1]
+				this.tHead.forEach((element, index) => {
+					element.ascending = true
+					element.isSort = false
+				})
+				let items = []
+				await this.setItems()
+				if(this.wordSearch.length > 0){
+					if (!this.isAll()) {
+						for (const item of this.tItems) {
+							const columenSearch = this.tHead[this.headSearch].name
+							if(this.wordSearch.length > 0){
+								const serachResult = item[columenSearch].includes(this.wordSearch)
+								if (serachResult) {
+									items.push(item)
+								}
+							} else {
+								items.push(item)
+							}
+						}
+					} else {
+						for (const item of this.tItems) {
+							for(let i=0; i<this.tHead.length; i++){
+								const columenSearch = this.tHead[i].name
+								if(item[columenSearch] && this.tHead[i].typeof !== 'component') {
+									const serachResult = item[columenSearch].includes(this.wordSearch)
+									if (serachResult) {
+										items.push(item)
+										break
+									}
+								}
+							}
+						}
+					}
+					this.tItems = items 
+				} else await this.setItems()
+
+				this.loadSearch = false
+			}, 500)
+			
+        },
 	}
 }
 </script>
 
 <style scoped>
+.not-found{
+	width: 100%;
+	text-align: center;
+	font-size: 1.3rem;
+}
+.load-table{
+	opacity: 0.7;
+	filter: blur(.2em);
+}
+.stage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 1rem 0;
+    margin: 0 -5%;
+    overflow: hidden;
+}
+
+.filter-contrast {
+    filter: contrast(5);
+    background-color: white;
+}
+
+.dot-flashing {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #9880ff;
+  color: #9880ff;
+  animation: dotFlashing 1s infinite linear alternate;
+  animation-delay: .5s;
+}
+
+.dot-flashing::before, .dot-flashing::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 0;
+}
+
+.dot-flashing::before {
+  left: -15px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #9880ff;
+  color: #9880ff;
+  animation: dotFlashing 1s infinite alternate;
+  animation-delay: 0s;
+}
+
+.dot-flashing::after {
+  left: 15px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #9880ff;
+  color: #9880ff;
+  animation: dotFlashing 1s infinite alternate;
+  animation-delay: 1s;
+}
+
+@keyframes dotFlashing {
+  0% {
+    background-color: #9880ff;
+  }
+  50%,
+  100% {
+    background-color: #ebe6ff;
+  }
+}
 .overlay {
   position: fixed;
   z-index: 9998;
@@ -526,9 +676,8 @@ section table {
 }
  table th {
 	 color: #878eb8;
-	 font-size: 0.85em;
-	 letter-spacing: 0.1em;
-	 text-transform: uppercase;
+	 font-size: 1.1rem;
+
 }
  .select {
 	 position: relative;

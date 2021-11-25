@@ -33,6 +33,9 @@
           !!
           {{props.item.text}}
       </template> -->
+      <!-- <template slot="column_4" >
+          <btn :textBtn="'test'"></btn>
+      </template> -->
       <template slot="modal-main" slot-scope="props">
         <div class="text">
           <div class="content">
@@ -43,11 +46,11 @@
           </div>
         </div>
       </template>
-      <template slot="column_1" slot-scope="props">
+      <!-- <template slot="column_1" slot-scope="props">
           **
             {{props.item[props.i.name]}}
           **
-      </template>
+      </template> -->
       <template slot="operate_icon_delete">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
           <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
@@ -69,13 +72,13 @@
 
 <script>
 import Vue from 'vue';
-// import { SaraghTableComponentSample } from '@/entry.esm';
+import btn from './btn.vue'
 
 export default Vue.extend({
   name: 'ServeDev',
-  // components: {
-  //  SaraghTableComponentSample,
-  // }
+  components: {
+   btn,
+  },
   data () {
     return {
       items: [
@@ -90,7 +93,8 @@ export default Vue.extend({
               lname: "fvdfvd",
               nationalCode: "dfdfv",
               phone: "09158854527",
-              username: "fdfv"
+              username: "fdfv" ,
+              myfunction: ()=> 'klklk'
           },
           {
               id: "222fgbfgb",
@@ -103,7 +107,11 @@ export default Vue.extend({
               lname: "bfgb",
               nationalCode: "gbfgbfg",
               phone: "09145556644",
-              username: "fgbfgb"
+              username: "fgbfgb",
+              propsCopmonent: {
+                textBtn: 12
+              },
+              mycomponent: () => import('./btn.vue')
           },
           {
               id: "333fgh",
@@ -275,7 +283,7 @@ export default Vue.extend({
               username: "بلابلا"
           },
           {
-              id: "dfdfv",
+              id: "16dfdfv",
               parent: "saraghotbzadeh",
               administratorName: "سارا قطب زاده",
               education: "dfvdfv",
@@ -288,7 +296,7 @@ export default Vue.extend({
               username: "dfdfv"
           },
           {
-              id: "gfhfghn",
+              id: "17gfhfghn",
               parent: "saraghotbzadeh",
               administratorName: "سارا قطب زاده",
               education: "fghfgh",
@@ -301,7 +309,7 @@ export default Vue.extend({
               username: "gfhfghn"
           },
           {
-              id: "gytyu",
+              id: "18gytyu",
               parent: "saraghotbzadeh",
               administratorName: "سارا قطب زاده",
               education: "بلابلا",
@@ -314,7 +322,7 @@ export default Vue.extend({
               username: "بلابلافغا"
           },
           {
-              id: "dfdfv",
+              id: "19dfdfv",
               parent: "saraghotbzadeh",
               administratorName: "سارا قطب زاده",
               education: "dfvdfv",
@@ -327,7 +335,7 @@ export default Vue.extend({
               username: "dfdfv"
           },
           {
-              id: "gfhfghn",
+              id: "20gfhfghn",
               parent: "saraghotbzadeh",
               administratorName: "سارا قطب زاده",
               education: "fghfgh",
@@ -340,7 +348,7 @@ export default Vue.extend({
               username: "gfhfghn"
           },
           {
-              id: "gytyu",
+              id: "21gytyu",
               parent: "saraghotbzadeh",
               administratorName: "سارا قطب زاده",
               education: "بلابلا",
@@ -353,7 +361,7 @@ export default Vue.extend({
               username: "بلابلافغا"
           },
           {
-              id: "dfdfv",
+              id: "22dfdfv",
               parent: "saraghotbzadeh",
               administratorName: "سارا قطب زاده",
               education: "dfvdfv",
@@ -366,7 +374,7 @@ export default Vue.extend({
               username: "dfdfv"
           },
           {
-              id: "gfhfghn",
+              id: "23gfhfghn",
               parent: "saraghotbzadeh",
               administratorName: "سارا قطب زاده",
               education: "fghfgh",
@@ -379,7 +387,7 @@ export default Vue.extend({
               username: "gfhfghn"
           },
           {
-              id: "gytyu",
+              id: "24gytyu",
               parent: "saraghotbzadeh",
               administratorName: "سارا قطب زاده",
               education: "بلابلا",
@@ -392,7 +400,7 @@ export default Vue.extend({
               username: "بلابلافغا"
           },
           {
-              id: "dfdfv",
+              id: "25dfdfv",
               parent: "saraghotbzadeh",
               administratorName: "سارا قطب زاده",
               education: "dfvdfv",
@@ -405,7 +413,7 @@ export default Vue.extend({
               username: "dfdfv"
           },
           {
-              id: "gfhfghn",
+              id: "26gfhfghn",
               parent: "saraghotbzadeh",
               administratorName: "سارا قطب زاده",
               education: "fghfgh",
@@ -418,7 +426,7 @@ export default Vue.extend({
               username: "gfhfghn"
           },
           {
-              id: "gytyu",
+              id: "27gytyu",
               parent: "saraghotbzadeh",
               administratorName: "سارا قطب زاده",
               education: "بلابلا",
@@ -429,6 +437,7 @@ export default Vue.extend({
               nationalCode: "بلابلا",
               phone: "09158889977",
               username: "بلابلافغا"
+            
           }
       ],
       pageSize: 3,
@@ -453,12 +462,25 @@ export default Vue.extend({
           text: 'تلفن',
           name: 'phone',
           typeof: 'phone'
+        },
+        {
+          text: 'component',
+          name: 'mycomponent',
+          typeof: 'component'
+        },
+        {
+          text: 'function',
+          name: 'myfunction',
+          typeof: 'function'
         }
       ],
     }
   },
   methods: {
-    deleteItem() {
+    deleteItem(item) {
+      this.items = this.items.filter(function(value){ 
+				return value.id !== item.id;
+			});
       console.log('deleteItem');
     },
     showItem() {

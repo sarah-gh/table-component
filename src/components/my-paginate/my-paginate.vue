@@ -4,7 +4,7 @@
       <ul class="flex items-center">
         <li class="pr-6" v-if="hasPrev()">
           <a href="#" @click.prevent="changePage(prevPage)">
-            <div class="flex items-center justify-center hover:bg-gray-200 rounded-md transform rotate-45 h-6 w-6">
+            <div class="change-page">
               <div class="transform -rotate-45">
                 <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                      stroke="currentColor">
@@ -16,7 +16,7 @@
         </li>
         <li class="pr-6" v-if="hasFirst()">
           <a href="#" @click.prevent="changePage(1)">
-            <div class="flex hover:bg-gray-200 rounded-md transform rotate-45 h-6 w-6 items-center justify-center">
+            <div class="pages">
               <span class="transform -rotate-45">
                 1
               </span>
@@ -27,7 +27,7 @@
         <li class="pr-6" v-for="(page, x) in pages" :key="x">
           <a href="#" @click.prevent="changePage(page)">
             <div :class="{'bg-gradient-to-r from-blue-400 to-indigo-400': current == page}"
-                 class="flex hover:bg-gray-200 rounded-md transform rotate-45 h-6 w-6 items-center justify-center">
+                 class="pages">
               <span class="transform -rotate-45">{{ page }}</span>
             </div>
           </a>
@@ -35,7 +35,7 @@
         <li class="pr-6" v-if="hasLast()">...</li>
         <li class="pr-6" v-if="hasLast()">
           <a href="#" @click.prevent="changePage(totalPages)">
-            <div class="flex hover:bg-gray-200 rounded-md transform rotate-45 h-6 w-6 items-center justify-center">
+            <div class="pages">
               <span class="transform -rotate-45">
                 {{ totalPages }}
               </span>
@@ -44,7 +44,7 @@
         </li>
         <li class="pr-6" v-if="hasNext()">
           <a href="#" @click.prevent="changePage(nextPage)">
-            <div class="flex items-center justify-center hover:bg-gray-200 rounded-md transform rotate-45 h-6 w-6">
+            <div class="change-page">
               <div class="transform -rotate-45">
                 <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                      stroke="currentColor">
@@ -59,7 +59,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 export default {
   name: 'my-Pagination',
   props: {
@@ -94,49 +94,47 @@ export default {
     }
   },
   methods: {
-    hasFirst: function () {
+    hasFirst () {
       return this.rangeStart !== 1
     },
-    hasLast: function () {
+    hasLast () {
       return this.rangeEnd < this.totalPages
     },
-    hasPrev: function () {
+    hasPrev () {
       return this.current > 1
     },
-    hasNext: function () {
+    hasNext () {
       return this.current < this.totalPages
     },
-    changePage: function (page) {
-      if (page > 0 && page <= this.totalPages) {
+    changePage (page) {
         this.$emit('page-changed', page)
-      }
     }
   },
   computed: {
-    pages: function () {
-      var pages = []
+    pages () {
+      let pages = []
 
-      for (var i = this.rangeStart; i <= this.rangeEnd; i++) {
+      for (let i = this.rangeStart; i <= this.rangeEnd; i++) {
         pages.push(i)
       }
 
       return pages
     },
-    rangeStart: function () {
-      var start = this.current - this.pageRange
+    rangeStart () {
+      let start = this.current - this.pageRange
       return (start > 0) ? start : 1
     },
-    rangeEnd: function () {
-      var end = this.current + this.pageRange
+    rangeEnd() {
+      let end = this.current + this.pageRange
       return (end < this.totalPages) ? end : this.totalPages
     },
-    totalPages: function () {
+    totalPages () {
       return Math.ceil(this.total / this.perPage)
     },
-    nextPage: function () {
+    nextPage () {
       return this.current + 1
     },
-    prevPage: function () {
+    prevPage () {
       return this.current - 1
     }
   }
@@ -144,144 +142,59 @@ export default {
 </script>
 
 <style scoped>
-
-hr {
-    height: 0;
-    color: inherit;
+.pages{
+  display: flex;
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  --tw-rotate: 45deg;
+  width: 1.5rem;
+  height: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.375rem;
 }
-abbr[title] {
-    -webkit-text-decoration: underline dotted;
-    text-decoration: underline dotted;
-}
-b, strong {
-    font-weight: bolder;
-}
-code, kbd, pre, samp {
-    font-size: 1em;
-}
-small {
-    font-size: 80%}
-sub, sup {
-    font-size: 75%;
-    line-height: 0;
-    position: relative;
-    vertical-align: baseline;
-}
-sub {
-    bottom: -.25em;
-}
-sup {
-    top: -.5em;
-}
-table {
-    text-indent: 0;
-    border-color: inherit;
-}
-button, input, optgroup, select, textarea {
-    font-size: 100%;
-    line-height: 1.15;
-    margin: 0;
-}
-button, select {
-    text-transform: none;
-}
-[type=button], button {
-    -webkit-appearance: button;
-}
-legend {
-    padding: 0;
-}
-progress {
-    vertical-align: baseline;
-}
-summary {
-    display: list-item;
-}
-blockquote, dd, dl, figure, h1, h2, h3, h4, h5, h6, hr, p, pre {
-    margin: 0;
-}
-button {
-    background-color: transparent;
-    background-image: none;
-}
-button:focus {
-    outline: 1px dotted;
-    outline: 5px auto -webkit-focus-ring-color;
-}
-fieldset {
-    margin: 0;
-    padding: 0;
+.change-page{
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  --tw-rotate: 45deg;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.375rem;
 }
 ol, ul {
     list-style: none;
     margin: 0;
     padding: 0;
 }
-html {
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    line-height: 1.5;
-}
-body {
-    font-family: inherit;
-    line-height: inherit;
-}
-*, ::after, ::before {
-    box-sizing: border-box;
-    border-width: 0;
-    border-style: solid;
-    border-color: #e5e7eb;
-}
-hr {
-    border-top-width: 1px;
-}
-img {
-    border-style: solid;
-}
-textarea {
-    resize: vertical;
-}
-input::-moz-placeholder, textarea::-moz-placeholder {
-    opacity: 1;
-    color: #9ca3af;
-}
-input:-ms-input-placeholder, textarea:-ms-input-placeholder {
-    opacity: 1;
-    color: #9ca3af;
-}
-input::placeholder, textarea::placeholder {
-    opacity: 1;
-    color: #9ca3af;
-}
-button {
-    cursor: pointer;
-}
-table {
-    border-collapse: collapse;
-}
-h1, h2, h3, h4, h5, h6 {
-    font-size: inherit;
-    font-weight: inherit;
-}
+
 a {
     color: inherit;
     text-decoration: inherit;
 }
-button, input, optgroup, select, textarea {
-    padding: 0;
-    line-height: inherit;
-    color: inherit;
-}
-audio, canvas, embed, iframe, img, object, svg, video {
-    display: block;
-}
-img, video {
-    max-width: 100%;
-    height: auto;
-}
-.bg-white {
-    --tw-bg-opacity: 1;
-    background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
-}
+
 .bg-blue-50 {
     --tw-bg-opacity: 1;
     background-color: rgba(239, 246, 255, var(--tw-bg-opacity));
@@ -388,17 +301,6 @@ img, video {
 }
 .pr-6 {
     padding-right: 1.5rem;
-}
-* {
-    --tw-shadow: 0 0 #0000;
-}
-* {
-    --tw-ring-inset: var(--tw-empty,  );
-    /*!*//*!*/--tw-ring-offset-width: 0px;
-    --tw-ring-offset-color: #fff;
-    --tw-ring-color: rgba(59,  130,  246,  0.5);
-    --tw-ring-offset-shadow: 0 0 #0000;
-    --tw-ring-shadow: 0 0 #0000;
 }
 .text-gray-400 {
     --tw-text-opacity: 1;
